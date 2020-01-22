@@ -23,5 +23,7 @@ export const NodeWrapper = styled.div<INodeWrapper>`
       ? "blue"
       : status === ICellStatus.FOUNDPATH
       ? "yellow"
+      : status === ICellStatus.BARRIER
+      ? "#777"
       : "#fff"};
 `;

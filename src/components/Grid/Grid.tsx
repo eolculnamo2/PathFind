@@ -96,7 +96,7 @@ const Grid: FC = (): JSX.Element => {
     let neighbors: IGridNode[] = [topNode, bottomNode, leftNode, rightNode];
 
     neighbors = neighbors
-      .filter((n: IGridNode) => n.distance !== Infinity)
+      .filter((n: IGridNode) => n && n.distance !== Infinity)
       .sort((a, b) => a.distance - b.distance);
     const closestNode: IGridNode = neighbors[0];
 
@@ -138,13 +138,29 @@ const Grid: FC = (): JSX.Element => {
     // recursively call each while none border destination.
     setTimeout(() => {
       if (found === false) {
-        if (topNode && topNode?.status !== ICellStatus.CHECKED)
+        if (
+          topNode &&
+          topNode?.status !== ICellStatus.CHECKED &&
+          topNode?.status !== ICellStatus.BARRIER
+        )
           checkNeighbors(topNode, parentDistance + 1);
-        if (bottomNode && bottomNode?.status !== ICellStatus.CHECKED)
+        if (
+          bottomNode &&
+          bottomNode?.status !== ICellStatus.CHECKED &&
+          bottomNode?.status !== ICellStatus.BARRIER
+        )
           checkNeighbors(bottomNode, parentDistance + 1);
-        if (leftNode && leftNode?.status !== ICellStatus.CHECKED)
+        if (
+          leftNode &&
+          leftNode?.status !== ICellStatus.CHECKED &&
+          leftNode?.status !== ICellStatus.BARRIER
+        )
           checkNeighbors(leftNode, parentDistance + 1);
-        if (rightNode && rightNode?.status !== ICellStatus.CHECKED)
+        if (
+          rightNode &&
+          rightNode?.status !== ICellStatus.CHECKED &&
+          rightNode?.status !== ICellStatus.BARRIER
+        )
           checkNeighbors(rightNode, parentDistance + 1);
       }
     }, 150);
@@ -190,9 +206,18 @@ const Grid: FC = (): JSX.Element => {
         onChange={() => setClickType(ClickType.DESTINATION)}
       />
       <span> Destination</span>
+      <input
+        type="radio"
+        name="click-type"
+        value={clickType}
+        checked={clickType === ClickType.BARRIER}
+        onChange={() => setClickType(ClickType.BARRIER)}
+      />
+      <span> Barrier</span>
       <br />
       <br />
       <button onClick={findPath}>Visualize path</button>
+      <button onClick={mount}>Reset</button>
       <GridWrapper width={width}>
         {nodes.map(({ id, distance, status }) => (
           <span key={`cell-${id}`} onClick={() => cellClick(id)}>
